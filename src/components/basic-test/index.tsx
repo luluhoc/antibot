@@ -27,6 +27,7 @@ const columns: ColumnsType<{
             style={{
               padding: 10,
               fontSize: 14,
+              whiteSpace: 'pre-line',
             }}
             color="red"
           >
@@ -40,6 +41,7 @@ const columns: ColumnsType<{
           style={{
             padding: 10,
             fontSize: 14,
+            whiteSpace: 'pre-line',
           }}
         >
           {res.data}
