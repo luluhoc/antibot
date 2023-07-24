@@ -1,4 +1,3 @@
-import React from 'react';
 import { Layout, Button } from 'antd';
 import { GithubOutlined } from '@ant-design/icons';
 
