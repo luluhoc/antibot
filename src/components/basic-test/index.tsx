@@ -1,7 +1,17 @@
 import { Table, Tag } from 'antd';
 import { type ColumnsType } from 'antd/es/table';
 import React, { useEffect } from 'react';
-import { advancedWebDriverTest, isChromeTest, userAgentTest, webDriverTest } from './tests';
+import {
+  advancedWebDriverTest,
+  brokenImageDimensionsTest,
+  isChromeTest,
+  isPluginsTypePluginArray,
+  languagesTest,
+  userAgentTest,
+  webDriverTest,
+  webGLRendererTest,
+  webGLVendorTest,
+} from './tests';
 
 const columns: ColumnsType<{
   key: string;
@@ -62,11 +72,16 @@ export const BasicTest = (): JSX.Element => {
       };
     }>
   >([]);
+
   useEffect(() => {
     const UA = userAgentTest();
     const webDriver = webDriverTest();
     const advancedWebDriver = advancedWebDriverTest();
     const isChrome = isChromeTest();
+    const pluginsArray = isPluginsTypePluginArray();
+    const lang = languagesTest();
+    const vendor = webGLVendorTest();
+    const renderer = webGLRendererTest();
     setData([
       {
         key: '1',
@@ -85,8 +100,28 @@ export const BasicTest = (): JSX.Element => {
       },
       {
         key: '4',
-        name: 'Is Chrome',
+        name: 'Chrome',
         res: isChrome,
+      },
+      {
+        key: '5',
+        name: 'Plugins Array (deprecated)',
+        res: pluginsArray,
+      },
+      {
+        key: '6',
+        name: 'Languages',
+        res: lang,
+      },
+      {
+        key: '7',
+        name: 'WebGL Vendor',
+        res: vendor,
+      },
+      {
+        key: '8',
+        name: 'WebGL Renderer',
+        res: renderer,
       },
     ]);
   }, []);

@@ -147,3 +147,115 @@ export const isChromeTest = (): { data: string; detected: boolean } => {
     detected: true,
   };
 };
+
+export const isPluginsTypePluginArray = (): { data: string; detected: boolean } => {
+  const isPluginArray = navigator.plugins instanceof PluginArray;
+
+  if (isPluginArray) {
+    return {
+      data: 'navigator.plugins is of type PluginArray',
+      detected: false,
+    };
+  }
+
+  return {
+    data: 'navigator.plugins is not of type PluginArray',
+    detected: true,
+  };
+};
+
+export const languagesTest = (): { data: string; detected: boolean } => {
+  const primaryLanguage = navigator.language;
+  const languages = navigator.languages;
+
+  if (primaryLanguage && languages) {
+    return {
+      data: `Primary language is ${primaryLanguage}. User's preferred languages are ${languages.join(',')}`,
+      detected: false,
+    };
+  }
+
+  return {
+    data: 'Unable to detect languages.',
+    detected: true,
+  };
+};
+
+export const webGLVendorTest = (): { data: string; detected: boolean } => {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+  if (gl && gl instanceof WebGLRenderingContext) {
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+
+    if (debugInfo) {
+      const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+
+      return {
+        data: `${vendor}`,
+        detected: false,
+      };
+    }
+  }
+
+  return {
+    data: 'Unable to detect WebGL vendor',
+    detected: true,
+  };
+};
+
+export const webGLRendererTest = (): { data: string; detected: boolean } => {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+  if (gl && gl instanceof WebGLRenderingContext) {
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+
+    if (debugInfo) {
+      const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+
+      return {
+        data: `${renderer}`,
+        detected: false,
+      };
+    }
+  }
+
+  return {
+    data: 'Unable to detect WebGL renderer',
+    detected: true,
+  };
+};
+
+export const brokenImageDimensionsTest = async (): Promise<{
+  data: string;
+  detected: boolean;
+}> => {
+  const img = new Image();
+  img.src = 'http://example.com/non-existent-image.jpg';
+
+  return await new Promise((resolve, reject) => {
+    img.onerror = () => {
+      // Image load failed (likely broken), return dimensions
+      resolve({
+        data: `Image dimensions are width: ${img.width}, height: ${img.height}`,
+        detected: img.width === 0 && img.height === 0,
+      });
+    };
+
+    img.onload = () => {
+      // This should never happen for a non-existent image
+      resolve({
+        data: 'Unexpectedly, the image loaded successfully',
+        detected: false,
+      });
+    };
+
+    setTimeout(() => {
+      resolve({
+        data: 'Image loading timed out',
+        detected: false,
+      });
+    }, 5000); // 5 seconds timeout
+  });
+};
