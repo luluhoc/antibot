@@ -234,7 +234,7 @@ export const brokenImageDimensionsTest = async (): Promise<{
   const img = new Image();
   img.src = 'http://example.com/non-existent-image.jpg';
 
-  return await new Promise((resolve, reject) => {
+  return await new Promise((resolve) => {
     img.onerror = () => {
       // Image load failed (likely broken), return dimensions
       resolve({

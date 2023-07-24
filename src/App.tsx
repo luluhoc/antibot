@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { ConfigProvider, Tag, theme, Typography } from 'antd';
+import { ConfigProvider, theme, Typography } from 'antd';
 import './App.css';
 import Title from 'antd/es/typography/Title';
 import { BasicTest } from './components/basic-test';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import React, { useEffect } from 'react';
+import React from 'react';
 import MyFooter from './components/layout/Footer';
 import { Content } from 'antd/es/layout/layout';
 
