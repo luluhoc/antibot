@@ -331,8 +331,8 @@ export const getComprehensiveBrowserInfo = (): any => {
     const canvas = document.createElement('canvas');
     const glContext = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext;
     const debugInfo = glContext.getExtension('WEBGL_debug_renderer_info');
-    webglVendor = glContext.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
-    webglRenderer = glContext.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+    webglVendor = glContext.getParameter(debugInfo?.UNMASKED_VENDOR_WEBGL ?? 0);
+    webglRenderer = glContext.getParameter(debugInfo?.UNMASKED_RENDERER_WEBGL ?? 0);
   } catch (e) {
     webglVendor = undefined;
     webglRenderer = undefined;
@@ -363,7 +363,6 @@ export const getComprehensiveBrowserInfo = (): any => {
     productSub: navigator.productSub,
     vendor: navigator.vendor,
     vendorSub: navigator.vendorSub,
-    battery: navigator.getBattery(),
     geolocation: navigator.geolocation,
     screen: {
       width: screen.width,
