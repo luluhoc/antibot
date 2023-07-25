@@ -3,9 +3,11 @@ import { type ColumnsType } from 'antd/es/table';
 import React, { useEffect } from 'react';
 import {
   advancedWebDriverTest,
+  devToolsOpenTest,
   isChromeTest,
   isPluginsTypePluginArray,
   languagesTest,
+  mouseMovementTest,
   userAgentTest,
   webDriverTest,
   webGLRendererTest,
@@ -72,6 +74,25 @@ export const BasicTest = (): JSX.Element => {
     }>
   >([]);
 
+  const [promises, setPromises] = React.useState<any>([]);
+  const [promisesLoading, setPromisesLoading] = React.useState<boolean>(true);
+
+  const testPromises = async () => {
+    const mouseMovement = await mouseMovementTest();
+    return [mouseMovement];
+  };
+
+  useEffect(() => {
+    testPromises()
+      .then((data) => {
+        setPromises(data);
+        setPromisesLoading(false);
+      })
+      .catch((err) => {
+        console.log('err', err);
+      });
+  }, []);
+
   useEffect(() => {
     const UA = userAgentTest();
     const webDriver = webDriverTest();
@@ -122,7 +143,21 @@ export const BasicTest = (): JSX.Element => {
         name: 'WebGL Renderer',
         res: renderer,
       },
+      !promisesLoading
+        ? {
+            key: '10',
+            name: 'Mouse Movement',
+            res: promises[0],
+          }
+        : {
+            key: '10',
+            name: 'Mouse Movement',
+            res: {
+              data: 'Loading...',
+              detected: false,
+            },
+          },
     ]);
-  }, []);
+  }, [promises]);
   return <Table dataSource={data} columns={columns} pagination={false} />;
 };

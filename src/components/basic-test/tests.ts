@@ -259,3 +259,28 @@ export const brokenImageDimensionsTest = async (): Promise<{
     }, 5000); // 5 seconds timeout
   });
 };
+
+export const mouseMovementTest = async (): Promise<{ data: string; detected: boolean }> => {
+  return await new Promise((resolve) => {
+    const timeoutId = setTimeout(() => {
+      // If no mouse movement detected after 2 seconds, assume it's a bot
+      resolve({
+        data: 'No mouse movement detected',
+        detected: true,
+      });
+    }, 2000);
+
+    window.addEventListener(
+      'mousemove',
+      () => {
+        // If mouse movement is detected, clear the timeout and assume it's not a bot
+        clearTimeout(timeoutId);
+        resolve({
+          data: 'Mouse movement detected',
+          detected: false,
+        });
+      },
+      { once: true },
+    );
+  });
+};
