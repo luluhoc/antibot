@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import {
   advancedWebDriverTest,
   devToolsOpenTest,
+  interactionSpeedTest,
   isChromeTest,
   isPluginsTypePluginArray,
   languagesTest,
@@ -76,6 +77,13 @@ export const BasicTest = (): JSX.Element => {
 
   const [promises, setPromises] = React.useState<any>([]);
   const [promisesLoading, setPromisesLoading] = React.useState<boolean>(true);
+  const [interaction, setInteraction] = React.useState<{
+    data: string;
+    detected: boolean;
+  }>({
+    data: 'No interaction yet',
+    detected: false,
+  });
 
   const testPromises = async () => {
     const mouseMovement = await mouseMovementTest();
@@ -94,6 +102,7 @@ export const BasicTest = (): JSX.Element => {
   }, []);
 
   useEffect(() => {
+    interactionSpeedTest(setInteraction);
     const UA = userAgentTest();
     const webDriver = webDriverTest();
     const advancedWebDriver = advancedWebDriverTest();
@@ -102,6 +111,7 @@ export const BasicTest = (): JSX.Element => {
     const lang = languagesTest();
     const vendor = webGLVendorTest();
     const renderer = webGLRendererTest();
+
     setData([
       {
         key: '1',
@@ -157,6 +167,11 @@ export const BasicTest = (): JSX.Element => {
               detected: false,
             },
           },
+      {
+        key: '11',
+        name: 'Interaction Speed',
+        res: interaction,
+      },
     ]);
   }, [promises]);
   return <Table dataSource={data} columns={columns} pagination={false} />;

@@ -271,7 +271,7 @@ export const mouseMovementTest = async (): Promise<{ data: string; detected: boo
     }, 2000);
 
     window.addEventListener(
-      'mousemove',
+      'pointermove',
       () => {
         // If mouse movement is detected, clear the timeout and assume it's not a bot
         clearTimeout(timeoutId);
@@ -283,4 +283,170 @@ export const mouseMovementTest = async (): Promise<{ data: string; detected: boo
       { once: true },
     );
   });
+};
+
+export const interactionSpeedTest = (
+  setInteraction: React.Dispatch<
+    React.SetStateAction<{
+      data: string;
+      detected: boolean;
+    }>
+  >,
+): { data: string; detected: boolean } => {
+  const startTime = Date.now();
+
+  // This event could be any interaction event like 'click', 'keydown', etc.
+  window.addEventListener(
+    'mousemove',
+    () => {
+      const interactionTime = Date.now() - startTime;
+
+      if (interactionTime < 10000) {
+        // If interaction happened within 1 second
+        setInteraction({
+          data: `Interaction happened in ${interactionTime} ms`,
+          detected: true,
+        });
+      } else {
+        // If interaction happened after 1 second
+        setInteraction({
+          data: `Interaction happened in ${interactionTime} ms`,
+          detected: false,
+        });
+      }
+    },
+    { once: true },
+  );
+
+  return {
+    data: 'No interaction yet',
+    detected: false,
+  };
+};
+
+export const getComprehensiveBrowserInfo = (): any => {
+  let webglVendor: string | undefined;
+  let webglRenderer: string | undefined;
+  try {
+    const canvas = document.createElement('canvas');
+    const glContext = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext;
+    const debugInfo = glContext.getExtension('WEBGL_debug_renderer_info');
+    webglVendor = glContext.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+    webglRenderer = glContext.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+  } catch (e) {
+    webglVendor = undefined;
+    webglRenderer = undefined;
+  }
+
+  const audioContext = window.AudioContext || (window as any).webkitAudioContext;
+  const audioContextFingerprint = audioContext ? new audioContext().destination.maxChannelCount.toString() : 'N/A';
+
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || (navigator as any).msMaxTouchPoints > 0;
+
+  // This would be a synchronous, blocking operation. Use it cautiously!
+  const cpuBenchmark = (): number => {
+    const start = performance.now();
+    for (let i = 0; i < 1e7; i++) {}
+    return performance.now() - start;
+  };
+
+  return {
+    userAgent: navigator.userAgent,
+    languages: navigator.languages,
+    hardwareConcurrency: navigator.hardwareConcurrency,
+    platform: navigator.platform,
+    cookiesEnabled: navigator.cookieEnabled,
+    doNotTrack: navigator.doNotTrack,
+    appVersion: navigator.appVersion,
+    appName: navigator.appName,
+    product: navigator.product,
+    productSub: navigator.productSub,
+    vendor: navigator.vendor,
+    vendorSub: navigator.vendorSub,
+    battery: navigator.getBattery(),
+    geolocation: navigator.geolocation,
+    screen: {
+      width: screen.width,
+      height: screen.height,
+      colorDepth: screen.colorDepth,
+      pixelDepth: screen.pixelDepth,
+      orientation: screen.orientation,
+    },
+    location: window.location,
+    localStorage: !!window.localStorage,
+    sessionStorage: !!window.sessionStorage,
+    indexedDB: 'indexedDB' in window,
+    openDatabase: 'openDatabase' in window,
+    cpuClass: (navigator as any).cpuClass,
+    plugins: Array.from(navigator.plugins),
+    mimeTypes: Array.from(navigator.mimeTypes),
+    chrome: (window as any).chrome,
+    permissions: navigator.permissions,
+    mediaDevices: navigator.mediaDevices,
+    serviceWorker: navigator.serviceWorker,
+    webgl: { vendor: webglVendor, renderer: webglRenderer },
+    audioContext: audioContextFingerprint,
+    maxTouchPoints: navigator.maxTouchPoints,
+    deviceMemory: (navigator as any).deviceMemory,
+    videoPlaybackQuality: (document as any).videoPlaybackQuality,
+    performanceTiming: window.performance.timing,
+    visualViewport: window.visualViewport,
+    innerWidth: window.innerWidth,
+    innerHeight: window.innerHeight,
+    outerWidth: window.outerWidth,
+    outerHeight: window.outerHeight,
+    scrollX: window.scrollX,
+    scrollY: window.scrollY,
+    pageXOffset: window.pageXOffset,
+    pageYOffset: window.pageYOffset,
+    screenX: window.screenX,
+    screenY: window.screenY,
+    screenLeft: window.screenLeft,
+    screenTop: window.screenTop,
+    currentTime: new Date().toString(),
+    memoryStatus: (window.performance as any).memory,
+    devicePixelRatio: window.devicePixelRatio,
+    historyLength: window.history.length,
+    hasTouch,
+    isJavaEnabled: navigator.javaEnabled(),
+    onlineStatus: navigator.onLine,
+    preferredColorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+    timezoneOffset: new Date().getTimezoneOffset(),
+    sessionStorageSize: sessionStorage.length,
+    localStorageSize: localStorage.length,
+    cookies: document.cookie.split('; ').length,
+    cpuBenchmark: cpuBenchmark(),
+    // Additional info
+    documentCharset: document.charset,
+    documentReadyState: document.readyState,
+    documentReferer: document.referrer,
+    documentLastModified: document.lastModified,
+    documentTitle: document.title,
+    documentURL: document.URL,
+    documentDomain: document.domain,
+    documentCookie: document.cookie,
+    documentBodyOffsetWidth: document.body.offsetWidth,
+    documentBodyOffsetHeight: document.body.offsetHeight,
+    documentBodyScrollWidth: document.body.scrollWidth,
+    documentBodyScrollHeight: document.body.scrollHeight,
+    windowNavigator: window.navigator,
+    windowHistory: window.history,
+    windowScreen: window.screen,
+    windowInnerWidth: window.innerWidth,
+    windowInnerHeight: window.innerHeight,
+    windowOuterWidth: window.outerWidth,
+    windowOuterHeight: window.outerHeight,
+    windowPageXOffset: window.pageXOffset,
+    windowPageYOffset: window.pageYOffset,
+    windowDevicePixelRatio: window.devicePixelRatio,
+    windowScreenLeft: window.screenLeft,
+    windowScreenTop: window.screenTop,
+    windowScrollX: window.scrollX,
+    windowScrollY: window.scrollY,
+    documentImages: document.images.length,
+    documentEmbeds: document.embeds.length,
+    documentLinks: document.links.length,
+    documentForms: document.forms.length,
+    documentScripts: document.scripts.length,
+  };
 };
