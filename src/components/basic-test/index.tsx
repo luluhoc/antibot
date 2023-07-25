@@ -3,7 +3,6 @@ import { type ColumnsType } from 'antd/es/table';
 import React, { useEffect } from 'react';
 import {
   advancedWebDriverTest,
-  devToolsOpenTest,
   interactionSpeedTest,
   isChromeTest,
   isPluginsTypePluginArray,
